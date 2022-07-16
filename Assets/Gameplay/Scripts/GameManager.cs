@@ -1,56 +1,23 @@
 using UnityEngine.Events;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    private static GameManager instance;
-    public static GameManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = FindObjectOfType<GameManager>();
-            }
-            return instance;
-        }
-    }
+    public UserData userData;
     private GameState gameState;
-    private int countLife;
-    private int countRing;
+    public  GameState GameState => gameState;
     private int level;
-    private Vector2 checkPoint = Vector2.zero;
-    private void Awake()
-    {
-        DontDestroyOnLoad(this);
-    }
+
     private void Start()
     {
         gameState = GameState.GameMenu;
+        userData.OnInitData();
+        UIManager.Instance.OpenUI(UIID.UICMainMenu);
     }
 
     public void ChangeState(GameState newState)
     {
-        if (gameState != newState)
-        {
-            if (newState == GameState.GameMenu)
-            {
-                UIManager.Instance.OpenUI(NumberUI.MainMenu);
-            }
-            else if(newState == GameState.GamePlay)
-            {
-                UIManager.Instance.OpenUI(NumberUI.GamePlay);
-            }
-            else if(newState == GameState.Pause)
-            {
-                UIManager.Instance.OpenUI(NumberUI.Pause);
-
-            }else if(newState == GameState.EndGame)
-            {
-                UIManager.Instance.OpenUI(NumberUI.Results);
-            }
-            gameState = newState;
-        }
+        gameState = newState;
     }
 
     public bool IsState(GameState checkState)
@@ -58,21 +25,6 @@ public class GameManager : MonoBehaviour
         return gameState == checkState;
     }
 
-    
-    public bool GetGameResult()
-    {
-        if(gameState == GameState.EndGame)
-        {
-            return countLife > 0;
-        }
-        return false;
-    }
-
-    public void RestartGame()
-    {
-        countLife = 3;
-        ChangeState(GameState.GamePlay);
-    }
 }
 
 

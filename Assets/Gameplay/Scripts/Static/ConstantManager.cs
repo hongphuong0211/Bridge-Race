@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ConstantManager : MonoBehaviour
 {
-    public static string BALL = "Player";
-    public static string OBSTACLES = "obstacles";
+    public static string ANIM_THROW = "isFall";
+    public static string ANIM_RUN = "velocity";
     public static string LEVEL = "level";
 }
