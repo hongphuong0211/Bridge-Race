@@ -6,6 +6,12 @@ using UnityEngine.AI;
 public class EnemyController : CharacterInstance
 {    
     public NavMeshAgent agent;
+
+    public override void FallEnter()
+    {
+        agent.enabled = false;
+        base.FallEnter();
+    }
     #region Idle
 
     public override void IdleAction()
@@ -23,7 +29,7 @@ public class EnemyController : CharacterInstance
             {
                 ChangeState(FindState.Instance);
             }
-            OnChangeAnim(ConstantManager.ANIM_RUN);
+            //OnChangeAnim(ConstantManager.ANIM_RUN);
         }
         else
         {
@@ -35,7 +41,7 @@ public class EnemyController : CharacterInstance
     public override void FindAction()
     {
         base.FindAction();
-        if (targetItem == null || !targetItem.gameObject.activeSelf)
+        if (targetItem == null || !targetItem.gameObject.activeSelf || targetItem.IsLooted)
         {
             ChangeState(IdleState.Instance);
         }
@@ -48,13 +54,13 @@ public class EnemyController : CharacterInstance
 
     public override void FindEnter()
     {
-        if (targetItem == null || !targetItem.gameObject.activeSelf)
+        if (targetItem == null || !targetItem.gameObject.activeSelf || targetItem.IsLooted)
         {
             ChangeState(IdleState.Instance);
         }
         agent.enabled = true;
         
-        OnChangeAnim(ConstantManager.ANIM_RUN);
+        //OnChangeAnim(ConstantManager.ANIM_RUN);
         base.FindEnter();
     }
     #endregion

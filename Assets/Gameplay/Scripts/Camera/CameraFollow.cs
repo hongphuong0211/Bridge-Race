@@ -14,7 +14,7 @@ public class CameraFollow : MonoBehaviour
     {
         camTransform = transform;
     }
-    void FixedUpdate()
+    void LateUpdate()
     { 
         smoothPos = Vector3.Lerp(camTransform.position, followTransform.position + offset, smoothSpeed);
         camTransform.position = smoothPos;

@@ -6,4 +6,5 @@ using UnityEngine;
 public class LevelSettings:ScriptableObject
 {
     public List<Color> enemyColors;
+    public int numberStages = 3;
 }

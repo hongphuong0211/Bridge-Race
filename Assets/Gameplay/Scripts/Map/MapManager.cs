@@ -1,12 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class MapManager : MonoBehaviour
 {
+    public Transform tf;
     public Dictionary<int, List<ItemInstance>> brickManage;
     public List<Vector3> allPosEmpty;
+    public Door[] doorStart;
+    public Door[] doorEnd;
+    public Transform[] bridge;
     private Queue<int> typeToSpawn;
+    private Tween m_Tween;
     private void Awake()
     {
         OnInit();
@@ -23,14 +29,15 @@ public class MapManager : MonoBehaviour
                 allPosEmpty.Add(new Vector3((float)i/10f, 0.025f,(float)j/10f));
             }
         }
-        InvokeRepeating("SpawnBrickAuto", 3f, 0.5f);
+        m_Tween?.Kill();
+        InvokeRepeating("SpawnBrickAuto", 3f, 0.2f);
     }
     private void SpawnBrickAuto()
     {
         if (typeToSpawn.Count > 0)
         {
             int type = typeToSpawn.Dequeue();
-            if (!brickManage.ContainsKey(type))
+            if (!brickManage.ContainsKey(type) || allPosEmpty.Count < 1)
             {
                 return;
             }
@@ -76,11 +83,18 @@ public class MapManager : MonoBehaviour
         {
             if(brickManage[item.TypeItems][i] == item)
             {
-                SimplePool.Despawn(item);
+                //SimplePool.Despawn(item);
                 brickManage[item.TypeItems].RemoveAt(i);
                 typeToSpawn.Enqueue(item.TypeItems);
                 return;
             }
+        }
+    }
+    public void EnqueueBrick(int typeItem, int count)
+    {
+        for(int i = 0; i < count; i++)
+        {
+            typeToSpawn.Enqueue(typeItem);
         }
     }
     public ItemInstance GetNearestIntance(int type, Transform charPos)
@@ -96,7 +110,7 @@ public class MapManager : MonoBehaviour
             //    minDistance = distance;
             //    nearest = brickManage[type][i];
             //}
-            if (brickManage[type][i].gameObject.activeSelf)
+            if (brickManage[type][i].gameObject.activeSelf && !brickManage[type][i].IsLooted)
             {
                 float distance = Vector3.SqrMagnitude(charPos.position - brickManage[type][i].tf.position);
                 if (distance < minDistance)
